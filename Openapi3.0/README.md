@@ -10,7 +10,7 @@ The Flask RESTful application deals with course management system where students
 ```
 .
 │    app.py
-└─── database
+└─── swagger
 |   |   openapi.yaml
 └─── database
     │   db.py
