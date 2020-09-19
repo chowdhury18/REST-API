@@ -4,6 +4,6 @@ Representational state transfer (REST) is an architectural style that define set
 
 In this repo, examples of creating RESTful API using popular programming languages and web frameworks are demonstrated. Lists are given as follows:
 
-- Flask + MongoDB
+- Flask + MongoDB (Containerize Application)
 - Nodejs + MongoDB
 - Openapi 3.0.0 specification
