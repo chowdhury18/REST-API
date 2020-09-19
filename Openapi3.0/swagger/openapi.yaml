@@ -1,0 +1,214 @@
+openapi: 3.0.0
+info:
+  title: Course Management System
+  version: 1.0.0
+servers:
+  - url: 'http://127.0.0.1:5000'
+    description: flask REST API
+paths:
+  /course:
+    post:
+      tags:
+        - Create course
+      description: Create a new course
+      operationId: create_course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      responses:
+        '201':
+          description: Course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '500':
+          description: Error:INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /courses:
+    parameters:
+    - name: course_type
+      in: query
+      schema:
+        type: string
+        enum:
+          - compulsory
+          - optional
+      required: false
+    - name: semester
+      in: query
+      schema:
+        type: string
+        enum:
+          - autumn
+          - spring
+      required: false
+    get:
+      tags:
+        - Get courses
+      description: Get courses by course type or semester wise
+      operationId: get_course_by_course_type_or_semester
+      responses:
+        '200':
+          description: Successfully get courses by course type or semester wise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Courses'
+        '404':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /course/{course_id}:
+    parameters:
+    - name: course_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+        - Get course by ID
+      description: Get course Info
+      operationId: get_course
+      responses:
+        '200':
+          description: A json course object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '404':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Update course
+      description: Update a course
+      operationId: update_course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      responses:
+        '200':
+          description: Course successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+        '500':
+          description: Error:INTERNAL SERVER ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Delete course
+      description: Delete a course
+      operationId: delete_course
+      responses:
+        '204':
+          description: Course successfully deleted
+        '404':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  schemas:
+    Course:
+      description: A representation of a course
+      type: object
+      required:
+        - code
+        - name
+        - course_type
+        - semester
+        - starting_date
+        - ending_date
+      properties:
+        id:
+          type: string
+          description: Unique course id
+          example: '5f59c0952cbedf77370ca22d'
+          readOnly: true
+        code:
+          type: string
+          description: Unique course code
+          example: 'CS-E4100'
+          maxLength: 10
+          uniqueItems: true
+        name:
+          type: string
+          description: Unique course name
+          example: 'CSS'
+          maxLength: 20
+          uniqueItems: true
+        description:
+          type: string
+          description: Short description of course
+          example: 'Cloud and software course'
+          maxLength: 30
+        course_type:
+          type: string
+          description: compulsory or optional
+          enum:
+            - compulsory
+            - optional
+          example: 'compulsory'
+        semester:
+          type: string
+          description: autumn or spring
+          enum:
+            - autumn
+            - spring
+          example: 'autumn'
+        starting_date:
+          type: string
+          description: starting date of the course
+          example: '2020-09-07T15:49:51.230+02:00'
+        ending_date:
+          type: string
+          description: ending date of the course
+          example: '2020-12-07T15:49:51.230+02:00'
+    Courses:
+      description: list of courses
+      type: array
+      items:
+        $ref: '#/components/schemas/Course'
+    Success:
+      description: successfully created, updated or deleted
+      type: object
+      properties:
+        message:
+          type: string
+        id:
+          type: string
+    Error:
+      description: unexpected error
+      type: object
+      properties:
+        message:
+          type: string
