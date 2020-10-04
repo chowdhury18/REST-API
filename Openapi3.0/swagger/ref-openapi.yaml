@@ -13,35 +13,82 @@ paths:
       description: Create a new course
       operationId: create_course
       requestBody:
-        $ref: '#/components/requestBodies/AddCourse'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
       responses:
         '201':
-          $ref: '#/components/responses/Success'
+          description: Course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
         '422':
-          $ref: '#/components/responses/Unprocessable'
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-          $ref: '#/components/responses/Unexpected'
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /courses:
     get:
       parameters:
-        - $ref: '#/components/parameters/course_type'
-        - $ref: '#/components/parameters/semester'
+      - name: course_type
+        in: query
+        schema:
+          type: string
+          enum:
+            - compulsory
+            - optional
+        required: false
+      - name: semester
+        in: query
+        schema:
+          type: string
+          enum:
+            - autumn
+            - spring
+        required: false
       tags:
         - Get courses
       description: Get courses by course type or semester wise
       operationId: get_course_by_course_type_or_semester
       responses:
         '200':
-          $ref: '#/components/responses/GetCourses'
+          description: Successfully get courses by course type or semester wise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Courses'
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-          $ref: '#/components/responses/Unexpected'
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 
   /course/{course_id}:
     parameters:
-      - $ref: '#/components/parameters/course_id' 
+    - name: course_id
+      in: path
+      required: true
+      schema:
+        type: string
     get:
       tags:
         - Get course by ID
@@ -49,27 +96,59 @@ paths:
       operationId: get_course
       responses:
         '200':
-          $ref: '#/components/responses/GetCourse'
+          description: A json course object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-          $ref: '#/components/responses/Unexpected'
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     put:
       tags:
         - Update course
       description: Update a course
       operationId: update_course
       requestBody:
-        $ref: '#/components/requestBodies/UpdateCourse'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
       responses:
         '200':
-          $ref: '#/components/responses/Success'
+          description: Course successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '422':
-          $ref: '#/components/responses/Unprocessable'
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-          $ref: '#/components/responses/Unexpected'
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     delete:
       tags:
         - Delete course
@@ -79,91 +158,20 @@ paths:
         '204':
           description: Course successfully deleted
         '404':
-          $ref: '#/components/responses/NotFound'
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         default:
-          $ref: '#/components/responses/Unexpected'
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 
 components:
-  parameters:
-    course_id:
-      name: course_id
-      in: path
-      required: true
-      schema:
-        type: string
-    course_type:
-      name: course_type
-      in: query
-      required: false
-      schema:
-        type: string
-        enum:
-          - compulsory
-          - optional
-    semester:
-      name: semester
-      in: query
-      schema:
-        type: string
-        enum:
-          - autumn
-          - spring
-      required: false
-  
-  responses:
-    Unexpected:
-      description: Unexpected error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unprocessable:
-      description: Unprocessable entity
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Success:
-      description: Successful
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Success'
-    GetCourse:
-      description: Get course information
-      content:
-        application/json:
-          schema:
-              $ref: '#/components/schemas/Course'
-    GetCourses:
-      description: Get courses information
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Courses'
-
-  requestBodies:
-    AddCourse:
-      description: Add new course
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Course'
-    UpdateCourse:
-      description: Update course
-      required: false
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Course'
-    
   schemas:
     Course:
       description: A representation of a course

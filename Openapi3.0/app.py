@@ -41,10 +41,10 @@ def add_course():
         status_code = 201
     except ValidationError as err:
         output = {"message": str(err)}
-        status_code = 500
+        status_code = 422
     except NotUniqueError as err:
         output = {"message": str(err)}
-        status_code = 500
+        status_code = 422
     return output, status_code
 
 
@@ -66,12 +66,12 @@ def get_course_by_id(course_id):
             course = json.loads(Course.objects().get_or_404(id=course_id).to_json())
             output = {'message': 'Course successfully updated', 'id': str(course_id)}
             status_code = 200
-        except ValidationError as err:
-            output = {"message": str(err)}
-            status_code = 500
         except NotUniqueError as err:
             output = {"message": str(err)}
-            status_code = 500
+            status_code = 422
+        except:
+            output = {"message": "Invalid course ID."}
+            status_code = 404
         return output, status_code
     elif request.method == 'DELETE':
         try:
