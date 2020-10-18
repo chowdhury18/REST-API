@@ -11,6 +11,7 @@ app = Flask(__name__)
 # database config
 app.config['MONGODB_SETTINGS'] = {
     'host': 'mongodb://localhost/flask-db'
+    # 'host':'mongodb://mongo:27017/flask-db' # when the app is run as a service using docker-compose
 }
 db = initialize_db(app)
 
